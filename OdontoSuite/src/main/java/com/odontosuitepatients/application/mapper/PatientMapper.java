@@ -1,7 +1,7 @@
-package com.odontosuitepatients.mapper;
+package com.odontosuitepatients.application.mapper;
 
-import com.odontosuitepatients.domain.dto.PatientRequest;
-import com.odontosuitepatients.domain.dto.PatientResponse;
+import com.odontosuitepatients.application.dto.PatientRequest;
+import com.odontosuitepatients.application.dto.PatientResponse;
 import com.odontosuitepatients.domain.model.Patient;
 import org.springframework.stereotype.Component;
 

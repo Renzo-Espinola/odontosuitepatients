@@ -1,10 +1,10 @@
-package com.odontosuitepatients.service.patient;
+package com.odontosuitepatients.application.service;
 
-import com.odontosuitepatients.domain.dto.PatientRequest;
-import com.odontosuitepatients.domain.dto.PatientResponse;
+import com.odontosuitepatients.application.dto.PatientRequest;
+import com.odontosuitepatients.application.dto.PatientResponse;
+import com.odontosuitepatients.application.mapper.PatientMapper;
 import com.odontosuitepatients.domain.model.Patient;
 import com.odontosuitepatients.domain.repository.PatientRepository;
-import com.odontosuitepatients.mapper.PatientMapper;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

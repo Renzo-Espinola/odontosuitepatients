@@ -1,7 +1,7 @@
-package com.odontosuitepatients.service.patient;
+package com.odontosuitepatients.application.service;
 
-import com.odontosuitepatients.domain.dto.PatientRequest;
-import com.odontosuitepatients.domain.dto.PatientResponse;
+import com.odontosuitepatients.application.dto.PatientRequest;
+import com.odontosuitepatients.application.dto.PatientResponse;
 import java.util.List;
 
 public interface PatientService {

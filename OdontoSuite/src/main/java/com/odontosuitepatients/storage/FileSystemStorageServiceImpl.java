@@ -1,4 +1,4 @@
-package com.odontosuitepatients.service.storage;
+package com.odontosuitepatients.storage;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

@@ -1,4 +1,4 @@
-package com.odontosuitepatients.domain.dto;
+package com.odontosuitepatients.application.dto;
 
 import java.time.LocalDate;
 

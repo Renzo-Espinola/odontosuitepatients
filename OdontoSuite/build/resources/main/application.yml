@@ -12,5 +12,8 @@ spring:
       hibernate:
         format_sql: true
 
+storage:
+  location: uploads/patients
+
 server:
   port: 8081

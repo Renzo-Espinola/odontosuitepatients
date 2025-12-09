@@ -1,4 +1,4 @@
-package com.odontosuitepatients.domain.dto;
+package com.odontosuitepatients.application.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
