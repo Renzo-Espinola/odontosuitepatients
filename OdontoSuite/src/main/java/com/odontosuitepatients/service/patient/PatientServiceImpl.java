@@ -1,0 +1,65 @@
+package com.odontosuitepatients.service.patient;
+
+import com.odontosuitepatients.domain.dto.PatientRequest;
+import com.odontosuitepatients.domain.dto.PatientResponse;
+import com.odontosuitepatients.domain.model.Patient;
+import com.odontosuitepatients.domain.repository.PatientRepository;
+import com.odontosuitepatients.mapper.PatientMapper;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class PatientServiceImpl implements PatientService {
+
+    private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
+
+    @Override
+    public PatientResponse create(final PatientRequest request) {
+        Patient patient = patientMapper.toEntity(request);
+        patient = patientRepository.save(patient);
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
+    public PatientResponse update(final Long id, final PatientRequest request) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
+
+        patientMapper.updateEntity(patient, request);
+        patient = patientRepository.save(patient);
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
+    public void delete(final Long id) {
+        final Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
+        patient.setActive(false);
+        patientRepository.save(patient);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PatientResponse getById(final Long id) {
+        final Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PatientResponse> list(final String lastNameFilter) {
+        final List<Patient> patients = (lastNameFilter == null || lastNameFilter.isBlank())
+                ? patientRepository.findAll()
+                : patientRepository.findByLastNameContainingIgnoreCase(lastNameFilter);
+
+        return patients.stream()
+                .map(patientMapper::toResponse)
+                .toList();
+    }
+}
