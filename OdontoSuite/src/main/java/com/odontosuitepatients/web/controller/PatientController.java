@@ -44,4 +44,11 @@ public class PatientController {
         return patientService.list(lastName);
     }
 
+    @GetMapping("/search")
+    public List<PatientResponse> search(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "true") boolean activeOnly) {
+        return patientService.search(q, activeOnly);
+    }
+
 }

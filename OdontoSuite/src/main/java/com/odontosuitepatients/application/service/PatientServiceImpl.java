@@ -62,4 +62,18 @@ public class PatientServiceImpl implements PatientService {
                 .map(patientMapper::toResponse)
                 .toList();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PatientResponse> search(final String q, final boolean activeOnly) {
+        final String query = (q == null) ? "" : q.trim();
+        if (query.isBlank()) {
+            return List.of();
+        }
+
+        return patientRepository.search(query, activeOnly)
+                .stream()
+                .map(patientMapper::toResponse)
+                .toList();
+    }
 }

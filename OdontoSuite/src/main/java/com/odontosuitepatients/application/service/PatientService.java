@@ -16,4 +16,6 @@ public interface PatientService {
 
     List<PatientResponse> list(String lastNameFilter);
 
+    List<PatientResponse> search(String q, boolean activeOnly);
+
 }
