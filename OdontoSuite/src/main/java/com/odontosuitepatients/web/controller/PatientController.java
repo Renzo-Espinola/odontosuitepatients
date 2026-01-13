@@ -1,8 +1,8 @@
 package com.odontosuitepatients.web.controller;
 
-import com.odontosuitepatients.application.dto.PatientRequest;
-import com.odontosuitepatients.application.dto.PatientResponse;
-import com.odontosuitepatients.application.service.PatientService;
+import com.odontosuitepatients.application.dto.patient.PatientRequest;
+import com.odontosuitepatients.application.dto.patient.PatientResponse;
+import com.odontosuitepatients.application.service.patient.PatientService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
