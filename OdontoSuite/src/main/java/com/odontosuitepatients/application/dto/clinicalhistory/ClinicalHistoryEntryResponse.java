@@ -4,6 +4,7 @@ package com.odontosuitepatients.application.dto.clinicalhistory;
 import java.time.OffsetDateTime;
 
 import com.odontosuitepatients.domain.enums.ClinicalHistoryType;
+import com.odontosuitepatients.domain.enums.ToothSurface;
 import lombok.Builder;
 import lombok.Value;
 
@@ -15,7 +16,7 @@ public class ClinicalHistoryEntryResponse {
     ClinicalHistoryType type;
     OffsetDateTime occurredAt;
     String toothCode;
-    String surface;
+    ToothSurface surface;
     String title;
     String note;
     OffsetDateTime createdAt;

@@ -1,6 +1,7 @@
 package com.odontosuitepatients.application.dto.clinicalhistory;
 
 import com.odontosuitepatients.domain.enums.ClinicalHistoryType;
+import com.odontosuitepatients.domain.enums.ToothSurface;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
@@ -14,7 +15,7 @@ public class ClinicalHistoryEntryRequest {
     ClinicalHistoryType type;
     OffsetDateTime occurredAt;
     String toothCode;
-    String surface;
+    ToothSurface surface;
     String title;
 
     @NotBlank String note;

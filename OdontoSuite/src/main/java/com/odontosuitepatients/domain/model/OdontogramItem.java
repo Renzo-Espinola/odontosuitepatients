@@ -30,7 +30,7 @@ public class OdontogramItem {
     private String toothCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(nullable=false, length=10)
     private ToothSurface surface;
 
     @Enumerated(EnumType.STRING)

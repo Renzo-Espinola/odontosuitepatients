@@ -1,6 +1,7 @@
 package com.odontosuitepatients.domain.model;
 
 import com.odontosuitepatients.domain.enums.ClinicalHistoryType;
+import com.odontosuitepatients.domain.enums.ToothSurface;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -39,8 +40,9 @@ public class ClinicalHistoryEntry {
     @Column(name = "tooth_code", length = 10)
     private String toothCode;
 
-    @Column(length = 10)
-    private String surface;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "surface", length = 10)
+    private ToothSurface surface;
 
     @Column(length = 120)
     private String title;

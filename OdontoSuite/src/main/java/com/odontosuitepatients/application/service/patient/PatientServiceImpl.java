@@ -5,6 +5,7 @@ import com.odontosuitepatients.application.dto.patient.PatientResponse;
 import com.odontosuitepatients.application.mapper.PatientMapper;
 import com.odontosuitepatients.domain.model.Patient;
 import com.odontosuitepatients.domain.repository.PatientRepository;
+import com.odontosuitepatients.exception.DuplicateDocumentNumberException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,13 @@ public class PatientServiceImpl implements PatientService {
     public PatientResponse update(final Long id, final PatientRequest request) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
+
+        String newDoc = request.getDocumentNumber();
+        if (newDoc != null && !newDoc.isBlank()) {
+            if (patientRepository.existsByDocumentNumberAndIdNot(newDoc, id)) {
+                throw new DuplicateDocumentNumberException(newDoc);
+            }
+        }
 
         patientMapper.updateEntity(patient, request);
         patient = patientRepository.save(patient);

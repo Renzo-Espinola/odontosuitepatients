@@ -59,12 +59,6 @@ public class ClinicalHistoryServiceImpl implements ClinicalHistoryService {
         return toResponse(loadOwnedEntry(patientId, entryId));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<ClinicalHistoryEntryResponse> list(Long patientId, OffsetDateTime from, OffsetDateTime to) {
-        return historyRepo.list(patientId, from, to).stream().map(this::toResponse).toList();
-    }
-
     @Transactional
     @Override
     public void delete(Long patientId, Long entryId) {
@@ -96,5 +90,25 @@ public class ClinicalHistoryServiceImpl implements ClinicalHistoryService {
                 .updatedAt(e.getUpdatedAt())
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClinicalHistoryEntryResponse> list(Long patientId, OffsetDateTime from, OffsetDateTime to) {
+
+        List<ClinicalHistoryEntry> entries;
+
+        if (from == null && to == null) {
+            entries = historyRepo.findByPatientIdOrderByOccurredAtDescIdDesc(patientId);
+        } else if (from != null && to == null) {
+            entries = historyRepo.findByPatientIdAndOccurredAtGreaterThanEqualOrderByOccurredAtDescIdDesc(patientId, from);
+        } else if (from == null) { // to != null
+            entries = historyRepo.findByPatientIdAndOccurredAtLessThanEqualOrderByOccurredAtDescIdDesc(patientId, to);
+        } else {
+            entries = historyRepo.findByPatientIdAndOccurredAtBetweenOrderByOccurredAtDescIdDesc(patientId, from, to);
+        }
+
+        return entries.stream().map(this::toResponse).toList();
+    }
+
 }
 

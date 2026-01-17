@@ -11,29 +11,29 @@ public class PatientMapper {
 
     public Patient toEntity(final PatientRequest r) {
         return Patient.builder()
-                .firstName(r.firstName())
-                .lastName(r.lastName())
-                .documentNumber(r.documentNumber())
-                .birthDate(r.birthDate())
-                .phone(r.phone())
-                .email(r.email())
-                .address(r.address())
-                .obraSocial(r.obraSocial())
-                .obraSocialNumber(r.obraSocialNumber())
+                .firstName(r.getFirstName())
+                .lastName(r.getLastName())
+                .documentNumber(r.getDocumentNumber())
+                .birthDate(r.getBirthDate())
+                .phone(r.getPhone())
+                .email(r.getEmail())
+                .address(r.getAddress())
+                .obraSocial(r.getObraSocial())
+                .obraSocialNumber(r.getObraSocialNumber())
                 .active(true)
                 .build();
     }
 
     public void updateEntity(final Patient p, final PatientRequest r) {
-        p.setFirstName(r.firstName());
-        p.setLastName(r.lastName());
-        p.setDocumentNumber(r.documentNumber());
-        p.setBirthDate(r.birthDate());
-        p.setPhone(r.phone());
-        p.setEmail(r.email());
-        p.setAddress(r.address());
-        p.setObraSocial(r.obraSocial());
-        p.setObraSocialNumber(r.obraSocialNumber());
+        p.setFirstName(r.getFirstName());
+        p.setLastName(r.getLastName());
+        p.setDocumentNumber(r.getDocumentNumber());
+        p.setBirthDate(r.getBirthDate());
+        p.setPhone(r.getPhone());
+        p.setEmail(r.getEmail());
+        p.setAddress(r.getAddress());
+        p.setObraSocial(r.getObraSocial());
+        p.setObraSocialNumber(r.getObraSocialNumber());
     }
 
     public PatientResponse toResponse(final Patient p) {

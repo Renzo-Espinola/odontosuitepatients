@@ -1,9 +1,8 @@
 package com.odontosuitepatients.application.service.odontogram;
 
-import com.odontosuitepatients.application.dto.odontogram.OdontogramEntryResponse;
-import com.odontosuitepatients.application.dto.odontogram.OdontogramResponse;
 import com.odontosuitepatients.application.dto.odontogram.item.OdontogramItemResponse;
 import com.odontosuitepatients.application.dto.odontogram.item.OdontogramItemUpsertRequest;
+import com.odontosuitepatients.application.dto.odontogram.item.OdontogramResponse;
 import com.odontosuitepatients.domain.enums.OdontogramStatus;
 import com.odontosuitepatients.domain.enums.ToothSurface;
 import com.odontosuitepatients.domain.model.*;
@@ -12,8 +11,7 @@ import com.odontosuitepatients.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -24,13 +22,14 @@ public class OdontogramServiceImpl implements OdontogramService {
     private final PatientRepository patientRepository;
     private final OdontogramRepository odontogramRepository;
     private final OdontogramItemRepository itemRepository;
-    private final ClinicalNoteRepository clinicalNoteRepository;
+    private final EncounterRepository encounterRepository;
 
     @Override
     @Transactional
     public OdontogramResponse getOrCreate(final Long patientId) {
         final Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalStateException("Patient not found: " + patientId));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Patient not found: " + patientId));
+
 
         final Odontogram odontogram = odontogramRepository.findByPatientId(patientId)
                 .orElseGet(() -> odontogramRepository.save(Odontogram.builder().patient(patient).build()));
@@ -54,31 +53,28 @@ public class OdontogramServiceImpl implements OdontogramService {
         final Odontogram odontogram = odontogramRepository.findByPatientId(patientId)
                 .orElseGet(() -> odontogramRepository.save(Odontogram.builder().patient(patient).build()));
 
+        final ToothSurface surface = request.getSurface() != null ? request.getSurface() : ToothSurface.GENERAL;
+
+        validateSurface(request.getStatus(), surface);
+
         final OdontogramItem item = itemRepository
-                .findByOdontogramIdAndToothCodeAndSurface(
-                        odontogram.getId(),
-                        request.getToothCode(),
-                        request.getSurface()
-                )
+                .findByOdontogramIdAndToothCodeAndSurface(odontogram.getId(), request.getToothCode(), surface)
                 .map(existing -> {
-                    existing.setStatus(request.getStatus());
-                    existing.setNote(request.getNote());
+                    existing.setStatus(request.getStatus()); existing.setNote(request.getNote());
                     return existing;
                 })
                 .orElseGet(() -> OdontogramItem.builder()
                         .odontogram(odontogram)
                         .toothCode(request.getToothCode())
-                        .surface(request.getSurface())
+                        .surface(surface)
                         .status(request.getStatus())
                         .note(request.getNote())
                         .build());
 
-        validateSurface(request.getStatus(),request.getSurface());
-
         itemRepository.save(item);
 
         if (request.isCreateClinicalNote()) {
-            clinicalNoteRepository.save(buildAutoClinicalNote(patient, request));
+            encounterRepository.save(buildAutoClinicalNote(patient, request));
         }
 
         return toResponse(odontogram);
@@ -102,8 +98,10 @@ public class OdontogramServiceImpl implements OdontogramService {
 
     // ----------------- Auto note builder -----------------
 
-    private ClinicalNote buildAutoClinicalNote(final Patient patient, final OdontogramItemUpsertRequest req) {
-        final String tooth = formatTooth(req.getToothCode(), req.getSurface());
+    private Encounter buildAutoClinicalNote(final Patient patient, final OdontogramItemUpsertRequest req) {
+        final ToothSurface surface = req.getSurface() != null ? req.getSurface() : ToothSurface.GENERAL;
+
+        final String tooth = formatTooth(req.getToothCode(), surface);
 
         // Ejemplo pedido: “36 O: CARIES”
         final String defaultDiagnosis = tooth + ": " + req.getStatus().name();
@@ -116,9 +114,9 @@ public class OdontogramServiceImpl implements OdontogramService {
                 ? req.getClinicalObservations()
                 : (isBlank(req.getNote()) ? null : req.getNote());
 
-        return ClinicalNote.builder()
+        return Encounter.builder()
                 .patient(patient)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .tooth(tooth)
                 .diagnosis(diagnosis)
                 .treatment(treatment)
@@ -137,7 +135,7 @@ public class OdontogramServiceImpl implements OdontogramService {
     // ----------------- mapping response -----------------
 
     private OdontogramResponse toResponse(final Odontogram odontogram) {
-        final List<OdontogramItemResponse> items = itemRepository.findAllByOdontogram(odontogram.getId())
+        final List<OdontogramItemResponse> items = itemRepository.findAllByOdontogramId(odontogram.getId())
                 .stream()
                 .map(this::toItemResponse)
                 .toList();
@@ -160,13 +158,12 @@ public class OdontogramServiceImpl implements OdontogramService {
     }
 
     private void validateSurface(OdontogramStatus status, ToothSurface surface) {
-        if ((status == OdontogramStatus.IMPLANT
+        boolean mustBeGeneral = status == OdontogramStatus.IMPLANT
                 || status == OdontogramStatus.EXTRACTED
-                || status == OdontogramStatus.MISSING)
-                && surface != null) {
-            throw new IllegalArgumentException(
-                    "Surface not allowed for status " + status
-            );
+                || status == OdontogramStatus.MISSING;
+
+        if (mustBeGeneral && surface != ToothSurface.GENERAL) {
+            throw new IllegalArgumentException("Surface not allowed for status " + status);
         }
     }
 }

@@ -63,4 +63,28 @@ public class FileSystemStorageServiceImpl implements StorageService {
         }
     }
 
+    @Override
+    public String storeClinicalAttachment(
+            final Long patientId,
+            final Long entryId,
+            final MultipartFile file) {
+
+        try {
+            final Path root = Paths.get(storageLocation, "patients", patientId.toString(), "history");
+            Files.createDirectories(root);
+
+            final String filename =
+                    "entry_" + entryId + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+            final Path destination = root.resolve(filename);
+            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+            return Paths.get("patients", patientId.toString(), "history", filename).toString();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error storing clinical attachment", e);
+        }
+    }
+
+
 }

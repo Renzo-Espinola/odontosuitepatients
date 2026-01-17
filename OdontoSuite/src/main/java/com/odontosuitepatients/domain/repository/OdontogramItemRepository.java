@@ -16,7 +16,7 @@ public interface OdontogramItemRepository extends JpaRepository<OdontogramItem, 
         where i.odontogram.id = :odontogramId
         order by i.toothCode asc, i.surface asc
     """)
-    List<OdontogramItem> findAllByOdontogram(@Param("odontogramId") Long odontogramId);
+    List<OdontogramItem> findAllByOdontogramId(@Param("odontogramId") Long odontogramId);
 
     Optional<OdontogramItem> findByOdontogramIdAndToothCodeAndSurface(
             Long odontogramId, String toothCode, ToothSurface surface);

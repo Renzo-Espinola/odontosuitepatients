@@ -22,4 +22,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
                 order by p.lastName asc, p.firstName asc
             """)
     List<Patient> search(@Param("q") String q, @Param("activeOnly") boolean activeOnly);
+
+    boolean existsByDocumentNumberAndIdNot(String documentNumber, Long id);
 }

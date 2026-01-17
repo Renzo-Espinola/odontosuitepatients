@@ -13,4 +13,6 @@ public interface StorageService {
 
     /** Borra si hace falta */
     void delete(String filename);
+
+    String storeClinicalAttachment(Long patientId, Long entryId, MultipartFile file);
 }

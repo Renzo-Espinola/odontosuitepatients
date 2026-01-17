@@ -1,10 +1,7 @@
 package com.odontosuitepatients.application.service.odontogram;
 
-import com.odontosuitepatients.application.dto.odontogram.OdontogramEntryResponse;
-import com.odontosuitepatients.application.dto.odontogram.OdontogramResponse;
 import com.odontosuitepatients.application.dto.odontogram.item.OdontogramItemUpsertRequest;
-
-import java.util.List;
+import com.odontosuitepatients.application.dto.odontogram.item.OdontogramResponse;
 
 public interface OdontogramService {
 

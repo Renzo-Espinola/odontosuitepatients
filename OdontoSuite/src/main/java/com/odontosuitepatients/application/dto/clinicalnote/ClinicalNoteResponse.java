@@ -1,13 +1,14 @@
 package com.odontosuitepatients.application.dto.clinicalnote;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 import lombok.Value;
 
 @Value
 public class ClinicalNoteResponse {
     Long id;
     Long patientId;
-    LocalDateTime dateTime;
+    OffsetDateTime dateTime;
     String tooth;
     String diagnosis;
     String treatment;
