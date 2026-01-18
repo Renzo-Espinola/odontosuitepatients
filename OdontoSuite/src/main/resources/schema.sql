@@ -145,3 +145,21 @@ CREATE TABLE IF NOT EXISTS odontogram_events (
 
 CREATE INDEX IF NOT EXISTS idx_odontogram_events_patient_time
     ON odontogram_events (patient_id, occurred_at DESC);
+
+
+----
+
+create table clinical_event (
+                                id bigserial primary key,
+                                patient_id bigint not null,
+                                created_at timestamptz not null default now(),
+                                type varchar(32) not null, -- NOTE | ODONTOGRAM_CHANGE
+                                tooth_code varchar(8),
+                                surface varchar(16),
+                                from_status varchar(32),
+                                to_status varchar(32),
+                                note text
+);
+
+create index idx_clinical_event_patient_created
+    on clinical_event (patient_id, created_at desc);
